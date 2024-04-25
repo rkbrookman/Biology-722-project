@@ -12,7 +12,7 @@ done
 
 #The following variation was used to run fastqc after trimming the reads:
 
-for i in *.trimmed.fastq.gz
+for i in *trimmed.fastq.gz
 
 do
 
