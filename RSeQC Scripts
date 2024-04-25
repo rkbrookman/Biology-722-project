@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Uses RSeQC to run a number of quality control checks on the reads
+# There is definitely a much more efficient way to write this than by writing $(basename "$i" .sortedByCoord.out.bam) over and over again on each line...
+# -i is the input - in our case, the BAM files from the alignment
+# Some of the RSeQC scripts required a .bed file as a reference (-r), which was kindly provided by Garrett
+#
+
+for i in *.bam
+
+do
+
+bam_stat.py -i "$i" > $(basename "$i" .sortedByCoord.out.bam).bam_stat.out
+clipping_profile.py -i "$i" -s "SE" -o $(basename "$i" .sortedByCoord.out.bam)
+geneBody_coverage.py -r /2/scratch/RowanBrookman/araport11_protCoding.201606_fixed.201606.bed -i "$i" -o $(basename "$i" .sortedByCoord.out.bam)
+read_distribution.py -r /2/scratch/RowanBrookman/araport11_protCoding.201606_fixed.201606.bed -i "$i" > 
+read_duplication.py  -i "$i" -o $(basename "$i" .sortedByCoord.out.bam)
+read_GC.py -i "$i" -o $(basename "$i" .sortedByCoord.out.bam)
+read_NVC.py -i "$" -o $(basename "$i" .sortedByCoord.out.bam)
+read_quality.py -i "$i" -o $(basename "$i" .sortedByCoord.out.bam)
+
+done
+
+# Unfortunately, I didn't realize until after I ran the above script that geneBody_coverage.py required BAM files that were both sorted AND indexed.
+# Since I used sorted but not indexed BAM files as the input, all the outputs from the geneBody_coverage.py part of the script were corrupted and I couldn't open them!
+# To index the BAM files, I wrote another script called convertBai.sh that uses samtools:
+
+#!/bin/bash
+
+for i in *.bam
+
+do
+
+/usr/local/samtools/current/samtools index "$i"
+
+done
+
+#Once I had all the .bai files in the same directory as all my .bam files, I wrote a script just to run geneBody_coverage.py on them:
+
+#!/bin/bash 
+
+for i in *bam
+
+do 
+
+geneBody_coverage.py  -r /2/scratch/RowanBrookman/araport11_protCoding.201606_fixed.201606.bed -i "$i" -o $(basename "$i" .sortedByCoord.out.bam)
+
+done
+
+# The above script took FOREVER to run - over a day!
+
+
+
+
+
+
