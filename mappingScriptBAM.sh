@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # This script uses STAR to map all the reads against the Arabidopsis thaliana genome using the genome index generated previously. 
-# It outputs sorted BAM files which can be used downstream for RSeQC and htseq-count.
 
 for i in *_trimmed.fastq.gz
 
@@ -14,3 +13,6 @@ do
 --outSAMtype BAM SortedByCoordinate \
 --outFileNamePrefix /scratch/RowanBrookman/722_project/STAR_outputs_BAM_fixed/
 done
+
+# The parameter --readFilesCommand zcat is needed since I used gzipped fastq files as input
+# The parameter --outSAMtype BAM SortedByCoordinate outputs a sorted BAM file that can be used downstream with RSeQC and htseq-count (default output is a SAM file)
