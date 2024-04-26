@@ -1,4 +1,4 @@
-#This script is pulled together from various sources, including Dr. Dworkin's in-class tutorial, Garrett's differential expression analysis script, and the DESeq2 vignette/manual/other things I found online
+#This script is pulled together from various sources, including Dr. Dworkin's in-class tutorial, Garrett's differential expression analysis script, and the DESeq2 vignette/manual/other resources I found online. 
 
 #Load in the packages required for the analysis
 
@@ -217,7 +217,9 @@ res
 
 summary(res)
 
+------------------------------------------------------------------------------------------------------------------------------------------
 
+#Performing the contrast analyses on different pairs of treatment/dataset groups
 
 pti_vs_eti_mock=results(countData2, contrast=c("group", "mock_eti", "mock_pti"), alpha=0.05)
 summary (pti_vs_eti_mock)
@@ -260,7 +262,26 @@ mock_vs_AvrRpm1=results(countData2, contrast=c("group", "mock_eti", "AvrRpm1_eti
 mock_vs_AvrRpm1=mock_vs_AvrRpm1[is.na(mock_vs_AvrRpm1$padj)==F,]
 mock_vs_AvrRpm1=mock_vs_AvrRpm1[mock_vs_AvrRpm1$log2FoldChange >1 & mock_vs_AvrRpm1$padj <0.05,]
 
-# My attempt at making a hierarchical clustering heatmap - I wasn't happy with how it looked so I cut it from the report. It felt very overcrowded with all the different sample names.
+----------------------------------------------------------------------------------------------------------------------------------
+#Ordering the contrast outputs by padj and then writing them to csv so I can save them to my laptop/drive
+
+head (pti_vs_eti_mock)
+
+write.csv(pti_vs_eti_mock, "pti_vs_eti_mock")
+
+pti_vs_eti_mock<-pti_vs_eti_mock[order(pti_vs_eti_mock$padj),]
+
+             
+head (pti_vs_eti_mock)
+
+flg_vs_AvrRpt <-flg_vs_AvrRpt[order(flg_vs_AvrRpt$padj),]
+head (flg_vs_AvrRpt)
+
+write.csv(flg_vs_AvrRpt, "flg_vs_AvrRpt2")
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+# My attempt at making a hierarchical clustering heatmap from the code we used in class - I wasn't happy with how mine looked so I cut it from the report. It felt very overcrowded with all the different sample names.
 
 rlogMat <-assay(pca_test)
 
@@ -272,6 +293,6 @@ rownames(mat)<- colnames(mat) <-with(colData(countData2), paste(treatment,paste0
 
 hc <-hclust(distsRL)
 
-hmcol <-colorRampPalette(brewer.pal(9, "Blues"))(100)
+hmcol <-colorRampPalette(brewer.pal(9, "Blues"))(100) # some of these colour palettes were nice to play around with though!
 
 heatmap.2(mat, Rowv=as.dendrogram(hc), symm = TRUE, trace = "none", col=rev(hmcol), margin=c(10,10))
