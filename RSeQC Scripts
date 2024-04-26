@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Uses RSeQC to run a number of quality control checks on the reads
-# There is definitely a much more efficient way to write this than by writing $(basename "$i" .sortedByCoord.out.bam) over and over again on each line...
+# Note: there is probably a much more efficient way to write this than by writing $(basename "$i" .sortedByCoord.out.bam) over and over again on each line...
 # -i is the input - in our case, the BAM files from the alignment
-# Some of the RSeQC scripts required a .bed file as a reference (-r), which was kindly provided by Garrett
+# Some of the RSeQC scripts required a .bed file as a reference (-r), which was kindly provided by Garrett (araport11_protCoding.201606_fixed_201606.bed)
 #
 
 for i in *.bam
@@ -47,7 +47,7 @@ geneBody_coverage.py  -r /2/scratch/RowanBrookman/araport11_protCoding.201606_fi
 
 done
 
-# The above script took FOREVER to run - over a day!
+# Note:the above script took FOREVER to run - over a day!
 
 
 
